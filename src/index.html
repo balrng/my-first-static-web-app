@@ -10,64 +10,65 @@
 
 <body>
     <main>
-    <h1>Vanilla JavaScript App</h1>
-    <p>Loading content from the Azure API(https://agreeable-bush-0b398a403.4.azurestaticapps.net/api/message): <b id="name">...</b></p>
+        <h1>Vanilla JavaScript App</h1>
+        <p>Loading content from the Azure API(https://agreeable-bush-0b398a403.4.azurestaticapps.net/api/message): <b
+                id="name">...</b></p>
     </main>
 
 
     <script>
-    (async function() {
-        const { message } = await( await fetch(`api/message`)).json();
-        document.querySelector('#name').textContent = message;
-    }());
+        (async function () {
+            const { message } = await (await fetch(`api/message`)).json();
+            document.querySelector('#name').textContent = message;
+        }());
     </script>
 
 
-<main>
-    <h1>Static Web Apps Cosmos No-SQL Database Connections</h1>
-    <p>Click to call cosmos db API to begin operations</p>
-    <div>
-        <button id="list" onclick="list()">List</button>
-        <button id="get" onclick="get()">Get</button>
-        <button id="update" onclick="update()">Update</button>
-        <button id="create" onclick="create()">Create</button>
-        <button id="delete" onclick="del()">Delete</button>
-    </div>
-</br>
-    <table id="resultTable" border="1">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-        </tr>
-    </thead>
-    <tbody>
-        <!-- Sonuçlar buraya eklenecek -->
-    </tbody>
-</table>
-  </main>
+    <main>
+        <h1>Static Web Apps Cosmos No-SQL Database Connections</h1>
+        <p>Click to call cosmos db API to begin operations</p>
+        <div>
+            <button id="list" onclick="list()">List</button>
+            <button id="get" onclick="get()">Get</button>
+            <button id="update" onclick="update()">Update</button>
+            <button id="create" onclick="create()">Create</button>
+            <button id="delete" onclick="del()">Delete</button>
+        </div>
+        </br>
+        <table id="resultTable" border="1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Sonuçlar buraya eklenecek -->
+            </tbody>
+        </table>
+    </main>
 
     <script>
-function updateTable(items) {
-    const tableBody = document.querySelector("#resultTable tbody");
-    tableBody.innerHTML = ""; // Önce tabloyu temizler
+        function updateTable(items) {
+            const tableBody = document.querySelector("#resultTable tbody");
+            tableBody.innerHTML = ""; // Önce tabloyu temizler
 
-    items.forEach(item => {
-        const row = document.createElement("tr");
-        const idCell = document.createElement("td");
-        const nameCell = document.createElement("td");
+            items.forEach(item => {
+                const row = document.createElement("tr");
+                const idCell = document.createElement("td");
+                const nameCell = document.createElement("td");
 
-        idCell.textContent = item.id || "-";
-        nameCell.textContent = item.Name || "-";
+                idCell.textContent = item.id || "-";
+                nameCell.textContent = item.Name || "-";
 
-        row.appendChild(idCell);
-        row.appendChild(nameCell);
-        tableBody.appendChild(row);
-    });
-}
+                row.appendChild(idCell);
+                row.appendChild(nameCell);
+                tableBody.appendChild(row);
+            });
+        }
 
 
-   async function list() {
+        async function list() {
 
             const query = `
                         {
@@ -90,9 +91,9 @@ function updateTable(items) {
 
             updateTable(result.data.people.items);
             return result.data.people.items;
-    }   
+        }
 
-   async function get() {
+        async function get() {
 
             const id = '1';
 
@@ -105,29 +106,29 @@ function updateTable(items) {
             }`;
 
             const query = {
-            query: gql,
-            variables: {
-                id: id,
-            },
+                query: gql,
+                variables: {
+                    id: id,
+                },
             };
 
             const endpoint = "/data-api/graphql";
             const response = await fetch(endpoint, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(query),
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(query),
             });
             const result = await response.json();
             console.table(result.data.person_by_pk);
             updateTable([result.data.person_by_pk]);
-     }
+        }
 
-     async function update() {
+        async function update() {
 
             const id = '1';
             const data = {
-            id: id,
-            Name: "Molly"
+                id: id,
+                Name: "Molly"
             };
 
             const gql = `
@@ -139,49 +140,70 @@ function updateTable(items) {
             }`;
 
             const query = {
-            query: gql,
-            variables: {
-                id: id,
-                _partitionKeyValue: id,
-                item: data
-            } 
+                query: gql,
+                variables: {
+                    id: id,
+                    _partitionKeyValue: id,
+                    item: data
+                }
             };
 
             const endpoint = "/data-api/graphql";
             const res = await fetch(endpoint, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(query)
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(query)
             });
 
             const result = await res.json();
             console.table(result.data.updatePerson);
-}
+        }
 
-    async function create() {
-        const items = await list();
-        const maxId = Math.max(...items.map(item => parseInt(item.id, 10)), 0);
-                const data = {
-                id: "3",
-                Name: "Pedro"
-                };
+        async function create() {
+            // Mevcut verileri al
+            const items = await list();
 
-                const gql = `
-                mutation create($item: CreatePersonInput!) {
-                    createPerson(item: $item) {
-                    id
-                    Name
-                    }
-                }`;
+            // Mevcut verilerden en büyük ID'yi bul
+            const maxId = Math.max(...items.map(item => parseInt(item.id, 10)), 0);
 
-                const query = {
+            // Yeni ID'yi oluştur
+            const newId = (maxId + 1).toString();
+
+            // Yeni veriyi oluştur
+            const data = {
+                id: newId,
+                Name: `Person ${newId}`
+            };
+
+            const gql = `
+                                mutation create($item: CreatePersonInput!) {
+                                    createPerson(item: $item) {
+                                        id
+                                        Name
+                                    }
+                                }`;
+
+            const query = {
                 query: gql,
-                variables: {
-                    item: data
-                } 
-    };
+                variables: { item: data }
+            };
 
-    async function del() {
+            const endpoint = "/data-api/graphql";
+            const createResponse = await fetch(endpoint, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(query)
+            });
+
+            const createResult = await createResponse.json();
+            console.table(createResult.data.createPerson);
+
+            // Tabloyu güncelle (yeni veriyi ekle)
+            updateTable([...items, createResult.data.createPerson]);
+        }
+
+
+        async function del() {
 
             const id = '3';
 
@@ -193,34 +215,34 @@ function updateTable(items) {
             }`;
 
             const query = {
-            query: gql,
-            variables: {
-                id: id,
-            _partitionKeyValue: id
-            }
+                query: gql,
+                variables: {
+                    id: id,
+                    _partitionKeyValue: id
+                }
             };
 
             const endpoint = "/data-api/graphql";
             const response = await fetch(endpoint, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(query)
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(query)
             });
 
             const result = await response.json();
-            console.log(`Record deleted: ${ JSON.stringify(result.data) }`);
-            }
+            console.log(`Record deleted: ${JSON.stringify(result.data)}`);
+        }
 
-            const endpoint = "/data-api/graphql";
-            const result = await fetch(endpoint, {
+        const endpoint = "/data-api/graphql";
+        const result = await fetch(endpoint, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(query)
-            });
+        });
 
-            const response = await result.json();
-            console.table(response.data.createPerson);
-}
+        const response = await result.json();
+        console.table(response.data.createPerson);
+        }
 
     </script>
 
