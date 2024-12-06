@@ -12,18 +12,6 @@
     <main>
     <h1>Vanilla JavaScript App</h1>
     <p>Loading content from the Azure API(https://agreeable-bush-0b398a403.4.azurestaticapps.net/api/message): <b id="name">...</b></p>
-</br>
-<table id="resultTable" border="1">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-        </tr>
-    </thead>
-    <tbody>
-        <!-- Sonuçlar buraya eklenecek -->
-    </tbody>
-</table>
     </main>
 
 
@@ -45,6 +33,18 @@
         <button id="create" onclick="create()">Create</button>
         <button id="delete" onclick="del()">Delete</button>
     </div>
+</br>
+    <table id="resultTable" border="1">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Sonuçlar buraya eklenecek -->
+    </tbody>
+</table>
   </main>
 
     <script>
@@ -89,6 +89,7 @@ function updateTable(items) {
             console.table(result.data.people.items);
 
             updateTable(result.data.people.items);
+            return result.data.people.items;
     }   
 
    async function get() {
@@ -158,7 +159,8 @@ function updateTable(items) {
 }
 
     async function create() {
-
+        const items = await list();
+        const maxId = Math.max(...items.map(item => parseInt(item.id, 10)), 0);
                 const data = {
                 id: "3",
                 Name: "Pedro"
