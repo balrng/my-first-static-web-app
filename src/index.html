@@ -160,36 +160,31 @@
         }
 
         async function create() {
-            // Mevcut verileri al
             const items = await list();
-
-            // Mevcut verilerden en büyük ID'yi bul
             const maxId = Math.max(...items.map(item => parseInt(item.id, 10)), 0);
 
-            // Yeni ID'yi oluştur
             const newId = (maxId + 1).toString();
-
-            // Yeni veriyi oluştur
             const data = {
                 id: newId,
                 Name: `Person ${newId}`
             };
-
             const gql = `
-                                mutation create($item: CreatePersonInput!) {
-                                    createPerson(item: $item) {
-                                        id
-                                        Name
-                                    }
-                                }`;
+                mutation create($item: CreatePersonInput!) {
+                    createPerson(item: $item) {
+                    id
+                    Name
+                    }
+                }`;
 
             const query = {
                 query: gql,
-                variables: { item: data }
+                variables: {
+                    item: data
+                }
             };
 
             const endpoint = "/data-api/graphql";
-            const createResponse = await fetch(endpoint, {
+            const result = await fetch(endpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(query)
@@ -197,8 +192,6 @@
 
             const createResult = await createResponse.json();
             console.table(createResult.data.createPerson);
-
-            // Tabloyu güncelle (yeni veriyi ekle)
             updateTable([...items, createResult.data.createPerson]);
         }
 
@@ -233,16 +226,7 @@
             console.log(`Record deleted: ${JSON.stringify(result.data)}`);
         }
 
-        const endpoint = "/data-api/graphql";
-        const result = await fetch(endpoint, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(query)
-        });
 
-        const response = await result.json();
-        console.table(response.data.createPerson);
-        }
 
     </script>
 
