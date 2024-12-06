@@ -184,7 +184,7 @@
             };
 
             const endpoint = "/data-api/graphql";
-            const result = await fetch(endpoint, {
+            const createResponse  = await fetch(endpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(query)
@@ -216,14 +216,16 @@
             };
 
             const endpoint = "/data-api/graphql";
-            const response = await fetch(endpoint, {
+            const deleteResponse = await fetch(endpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(query)
             });
 
-            const result = await response.json();
-            console.log(`Record deleted: ${JSON.stringify(result.data)}`);
+            const deleteResult = await deleteResponse.json();
+            console.log(`Record deleted: ${JSON.stringify(deleteResult.data)}`);
+
+            updateTable(items.filter(item => parseInt(item.id, 10) !== maxId));
         }
 
 
