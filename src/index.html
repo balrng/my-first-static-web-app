@@ -162,6 +162,7 @@
 
             const result = await res.json();
             console.table(result.data.updatePerson);
+            updateTable([...items, result.data.createPerson]);
         }
 
         async function create() {
