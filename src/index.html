@@ -11,7 +11,7 @@
 <body>
     <main>
     <h1>Vanilla JavaScript App</h1>
-    <p>Loading content from the Azure API: <b id="name">...</b></p>
+    <p>Loading content from the Azure API(https://agreeable-bush-0b398a403.4.azurestaticapps.net/api/message): <b id="name">...</b></p>
     </main>
 
     <script>
@@ -22,10 +22,9 @@
     </script>
 
 
+<main>
     <h1>Static Web Apps Database Connections</h1>
-    <blockquote>
-        Open the console in the browser developer tools to see the API responses.
-    </blockquote>
+    <p>Click to call cosmos db API to begin operations</p>
     <div>
         <button id="list" onclick="list()">List</button>
         <button id="get" onclick="get()">Get</button>
@@ -33,7 +32,28 @@
         <button id="create" onclick="create()">Create</button>
         <button id="delete" onclick="del()">Delete</button>
     </div>
+  </main>
+
     <script>
+function updateTable(items) {
+    const tableBody = document.querySelector("#resultTable tbody");
+    tableBody.innerHTML = ""; // Önce tabloyu temizler
+
+    items.forEach(item => {
+        const row = document.createElement("tr");
+        const idCell = document.createElement("td");
+        const nameCell = document.createElement("td");
+
+        idCell.textContent = item.id || "-";
+        nameCell.textContent = item.Name || "-";
+
+        row.appendChild(idCell);
+        row.appendChild(nameCell);
+        tableBody.appendChild(row);
+    });
+}
+
+
    async function list() {
 
             const query = `
@@ -54,6 +74,8 @@
             });
             const result = await response.json();
             console.table(result.data.people.items);
+
+            updateTable(result.data.people.items);
     }   
 
    async function get() {
@@ -83,6 +105,7 @@
             });
             const result = await response.json();
             console.table(result.data.person_by_pk);
+            updateTable([result.data.person_by_pk]);
      }
 
      async function update() {
