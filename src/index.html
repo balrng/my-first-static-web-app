@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <!-- <main>
+    <main>
     <h1>Vanilla JavaScript App</h1>
     <p>Loading content from the API: <b id="name">...</b></p>
     </main>
@@ -19,8 +19,8 @@
         const { message } = await( await fetch(`api/message`)).json();
         document.querySelector('#name').textContent = message;
     }());
-    </script> -->
-    <h1>Static Web Apps Database Connections</h1>
+    </script>
+    <!-- <h1>Static Web Apps Database Connections</h1>
     <blockquote>
         Open the console in the browser developer tools to see the API responses.
     </blockquote>
@@ -116,7 +116,7 @@ const response = await result.json();
 console.table(response.data.createPerson);
 }
 
-    </script>
+    </script> -->
 
 </body>
 

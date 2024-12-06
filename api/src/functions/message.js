@@ -5,7 +5,7 @@ app.http('message', {
     authLevel: 'anonymous',
     handler: async (request, context) => {
         return { 
-            body: JSON.stringify({ message: 'Hello, from the API!' }),
+            body: JSON.stringify({ message: 'Hello, from the API!' }),  
             headers: { 'Content-Type': 'application/json' }
         };
     }
