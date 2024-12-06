@@ -12,8 +12,9 @@
     <main>
         <h1>JavaScript Azure Web Static App</h1>
         <h4>Deployed via Github CI/CD Actions </h4>
-        <p>Loading content from the Azure Static Web App Functions API <a href="https://agreeable-bush-0b398a403.4.azurestaticapps.net/api/message" target="_blank"> API link </a>: <b
-                id="name">...</b></p>
+        <p>Loading content from the Azure Static Web App Functions API <a
+                href="https://agreeable-bush-0b398a403.4.azurestaticapps.net/api/message" target="_blank"> API link
+            </a>: <b id="name">...</b></p>
     </main>
 
 
@@ -129,7 +130,7 @@
         }
 
         async function update() {
-
+            const items = await list();
             const id = '1';
             const data = {
                 id: id,
@@ -161,8 +162,13 @@
             });
 
             const result = await res.json();
+           
+
+            const updatedItems = items.map(item =>
+                item.id === id ? result.data.updatePerson : item
+            );
+            updateTable(updatedItems);
             console.table(result.data.updatePerson);
-            updateTable([...items, result.data.createPerson]);
         }
 
         async function create() {
