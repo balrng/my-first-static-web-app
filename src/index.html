@@ -49,6 +49,10 @@
     </main>
 
     <script>
+
+        function getRandomNumber() {
+            return Math.floor(Math.random() * 1000) + 1;
+        }
         function updateTable(items) {
             const tableBody = document.querySelector("#resultTable tbody");
             tableBody.innerHTML = ""; // Önce tabloyu temizler
@@ -128,7 +132,7 @@
             const id = '1';
             const data = {
                 id: id,
-                Name: "Molly"
+                Name: `Person Updated with Random Number ${getRandomNumber()}`
             };
 
             const gql = `
@@ -184,7 +188,7 @@
             };
 
             const endpoint = "/data-api/graphql";
-            const createResponse  = await fetch(endpoint, {
+            const createResponse = await fetch(endpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(query)
@@ -198,20 +202,28 @@
 
         async function del() {
 
-            const id = '3';
+            const items = await list();
 
+            if (items.length === 0) {
+                console.log("No records to delete.");
+                return;
+            }
+            const maxId = items.reduce((max, item) => Math.max(max, parseInt(item.id, 10)), 0);
             const gql = `
             mutation del($id: ID!, $_partitionKeyValue: String!) {
                 deletePerson(id: $id, _partitionKeyValue: $_partitionKeyValue) {
-                id
+                    id
                 }
             }`;
+
+
+
 
             const query = {
                 query: gql,
                 variables: {
-                    id: id,
-                    _partitionKeyValue: id
+                    id: maxId.toString(),
+                    _partitionKeyValue: maxId.toString()
                 }
             };
 
@@ -225,6 +237,7 @@
             const deleteResult = await deleteResponse.json();
             console.log(`Record deleted: ${JSON.stringify(deleteResult.data)}`);
 
+            // Tabloyu güncelle (silinen kaydı çıkar)
             updateTable(items.filter(item => parseInt(item.id, 10) !== maxId));
         }
 
