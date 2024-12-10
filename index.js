@@ -4,11 +4,7 @@ blobUpload = function(file, url, container, sasKey) {
     var blobName = buildBlobName(file);
     var login = `${url}/${container}/${blobName}?${sasKey}`;
     var blockBlobClient = new BlockBlobClient(login, new AnonymousCredential());
-<<<<<<< HEAD
-    blockBlobClient.uploadData() (file);
-=======
     blockBlobClient.uploadBrowserData() (file);
->>>>>>> c497c110ea8b40d274f44e3cb9853c6c1e15bfb3
 }
 
 function buildBlobName(file) {
